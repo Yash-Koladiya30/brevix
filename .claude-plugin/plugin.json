@@ -1,0 +1,19 @@
+{
+  "name": "brevix",
+  "version": "0.2.0",
+  "description": "Compress LLM output safely. Save tokens without breaking your code. Caveman + Accuracy Guard.",
+  "author": {
+    "name": "Yash Koladiya",
+    "email": "yashkoladiya123@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Yash-Koladiya30/brevix",
+  "repository": "https://github.com/Yash-Koladiya30/brevix",
+  "keywords": [
+    "compression",
+    "tokens",
+    "cost-optimization",
+    "caveman",
+    "accuracy-guard"
+  ]
+}

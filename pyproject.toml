@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brevix"
+version = "0.2.0"
+description = "Compress LLM output safely. Save tokens without breaking your code."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [{ name = "Yash Koladiya", email = "yashkoladiya123@gmail.com" }]
+keywords = ["llm", "claude", "compression", "tokens", "cost-optimization", "claude-code", "ai-tools"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+guard = ["sentence-transformers>=2.2.0"]
+tokens = ["tiktoken>=0.5.0"]
+all = ["sentence-transformers>=2.2.0", "tiktoken>=0.5.0"]
+dev = ["pytest>=7.0", "pytest-cov", "ruff"]
+
+[project.scripts]
+brevix = "brevix.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Yash-Koladiya30/brevix"
+Repository = "https://github.com/Yash-Koladiya30/brevix"
+Issues = "https://github.com/Yash-Koladiya30/brevix/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"

@@ -1,0 +1,146 @@
+"""Brevix CLI entrypoint."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+
+from brevix import (
+    Compressor,
+    CompressionMode,
+    AccuracyGuard,
+    Stats,
+    pick_mode,
+    count_tokens,
+    count_tokens_method,
+    __version__,
+)
+
+
+def _cmd_compress(args: argparse.Namespace) -> int:
+    text = args.text
+    if text == "-" or not text:
+        text = sys.stdin.read()
+
+    if args.mode == "auto":
+        adaptive = pick_mode(text, threshold=args.threshold)
+        result = adaptive.compression
+        guard_result = adaptive.guard
+        chosen = adaptive.chosen_mode
+        if not guard_result.passed and args.strict:
+            sys.stderr.write(
+                f"[brevix] auto: no mode passed guard ({guard_result.similarity:.2f} < {args.threshold:.2f}). "
+                f"Emitting original.\n"
+            )
+            print(text)
+            return 2
+        if args.verbose:
+            sys.stderr.write(f"[brevix] auto picked mode={chosen.value}\n")
+    else:
+        chosen = CompressionMode(args.mode)
+        result = Compressor(mode=chosen).compress(text)
+        guard_result = None
+        if args.guard:
+            guard = AccuracyGuard(threshold=args.threshold)
+            guard_result = guard.check(result.original, result.compressed)
+            if not guard_result.passed:
+                sys.stderr.write(guard_result.warning + "\n")
+                if args.strict:
+                    sys.stderr.write("Strict mode: emitting original instead.\n")
+                    print(result.original)
+                    return 2
+
+    if not args.no_stats:
+        Stats().record(
+            mode=chosen.value,
+            chars_saved=result.char_savings,
+            tokens_saved=result.token_savings_estimate,
+        )
+
+    print(result.compressed)
+    if args.verbose:
+        orig_tok = count_tokens(result.original)
+        comp_tok = count_tokens(result.compressed)
+        method = count_tokens_method()
+        sys.stderr.write(
+            f"\n[brevix] mode={chosen.value} "
+            f"chars: {len(result.original)}→{len(result.compressed)} "
+            f"({result.char_savings_pct}% saved) "
+            f"tokens ({method}): {orig_tok}→{comp_tok}\n"
+        )
+        if guard_result:
+            sys.stderr.write(
+                f"[brevix] guard: sim={guard_result.similarity:.3f} "
+                f"({guard_result.method}) pass={guard_result.passed}\n"
+            )
+    return 0
+
+
+def _cmd_stats(args: argparse.Namespace) -> int:
+    stats = Stats()
+    if args.reset:
+        stats.reset()
+        print("Stats reset.")
+        return 0
+    print(stats.summary())
+    return 0
+
+
+def _cmd_check(args: argparse.Namespace) -> int:
+    guard = AccuracyGuard(threshold=args.threshold)
+    result = guard.check(args.original, args.compressed)
+    print(
+        f"Similarity: {result.similarity:.4f}  "
+        f"Threshold: {result.threshold:.2f}  "
+        f"Passed: {result.passed}  "
+        f"Method: {result.method}"
+    )
+    return 0 if result.passed else 1
+
+
+def _cmd_count(args: argparse.Namespace) -> int:
+    text = args.text
+    if text == "-" or not text:
+        text = sys.stdin.read()
+    print(f"{count_tokens(text)} tokens ({count_tokens_method()}, {len(text)} chars)")
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="brevix",
+        description="Compress LLM output safely. Save tokens without breaking your code.",
+    )
+    parser.add_argument("--version", action="version", version=f"brevix {__version__}")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    p_compress = sub.add_parser("compress", help="Compress text")
+    p_compress.add_argument("text", nargs="?", default="-", help="Text to compress, or '-' for stdin")
+    p_compress.add_argument("--mode", choices=["lite", "full", "ultra", "auto"], default="full")
+    p_compress.add_argument("--guard", action="store_true", help="Enable Accuracy Guard")
+    p_compress.add_argument("--strict", action="store_true", help="Fall back to original if guard fails")
+    p_compress.add_argument("--threshold", type=float, default=0.85)
+    p_compress.add_argument("--no-stats", action="store_true", help="Don't record to local stats")
+    p_compress.add_argument("-v", "--verbose", action="store_true")
+    p_compress.set_defaults(func=_cmd_compress)
+
+    p_stats = sub.add_parser("stats", help="Show local stats")
+    p_stats.add_argument("--reset", action="store_true")
+    p_stats.set_defaults(func=_cmd_stats)
+
+    p_check = sub.add_parser("check", help="Check similarity between two texts")
+    p_check.add_argument("original")
+    p_check.add_argument("compressed")
+    p_check.add_argument("--threshold", type=float, default=0.85)
+    p_check.set_defaults(func=_cmd_check)
+
+    p_count = sub.add_parser("count", help="Count tokens in text")
+    p_count.add_argument("text", nargs="?", default="-")
+    p_count.set_defaults(func=_cmd_count)
+
+    args = parser.parse_args(argv)
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
