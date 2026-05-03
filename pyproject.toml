@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "brevix"
-version = "0.2.0"
+version = "0.3.0"
 description = "Compress LLM output safely. Save tokens without breaking your code."
 readme = "README.md"
 license = { text = "MIT" }
@@ -40,6 +40,9 @@ Issues = "https://github.com/Yash-Koladiya30/brevix/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"brevix.templates" = ["*.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

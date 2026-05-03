@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import sys
 
+from pathlib import Path
+
 from brevix import (
     Compressor,
     CompressionMode,
@@ -13,6 +15,9 @@ from brevix import (
     pick_mode,
     count_tokens,
     count_tokens_method,
+    install as install_target,
+    list_targets,
+    TARGETS,
     __version__,
 )
 
@@ -106,6 +111,28 @@ def _cmd_count(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_install(args: argparse.Namespace) -> int:
+    if args.list:
+        print(list_targets())
+        return 0
+    target = args.target
+    if target is None:
+        sys.stderr.write("Error: --target required (or use --list).\n")
+        return 2
+    if target != "all" and target not in TARGETS:
+        sys.stderr.write(f"Error: unknown target '{target}'. Run `brevix install --list`.\n")
+        return 2
+    root = Path(args.path).resolve()
+    files = install_target(target, root)
+    print(f"Brevix installed for target '{target}' in {root}:")
+    for f in files:
+        try:
+            print(f"  + {f.relative_to(root)}")
+        except ValueError:
+            print(f"  + {f}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="brevix",
@@ -137,6 +164,20 @@ def main(argv: list[str] | None = None) -> int:
     p_count = sub.add_parser("count", help="Count tokens in text")
     p_count.add_argument("text", nargs="?", default="-")
     p_count.set_defaults(func=_cmd_count)
+
+    p_install = sub.add_parser(
+        "install",
+        help="Install Brevix rules into a project for a specific LLM coding tool",
+    )
+    p_install.add_argument(
+        "target",
+        nargs="?",
+        help="Target tool: claude-code, cursor, windsurf, codex, antigravity, copilot, "
+             "aider, continue, cline, roo, zed, agents-md, all",
+    )
+    p_install.add_argument("--path", default=".", help="Project root (default: cwd)")
+    p_install.add_argument("--list", action="store_true", help="List available targets")
+    p_install.set_defaults(func=_cmd_install)
 
     args = parser.parse_args(argv)
     return args.func(args)

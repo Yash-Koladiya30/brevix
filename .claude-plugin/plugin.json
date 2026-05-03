@@ -1,6 +1,6 @@
 {
   "name": "brevix",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Compress LLM output safely. Save tokens without breaking your code. Caveman + Accuracy Guard.",
   "author": {
     "name": "Yash Koladiya",

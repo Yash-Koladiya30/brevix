@@ -5,8 +5,9 @@ from brevix.accuracy_guard import AccuracyGuard, GuardResult
 from brevix.stats import Stats
 from brevix.adaptive import pick_mode, AdaptiveResult
 from brevix.tokens import count_tokens, count_tokens_method
+from brevix.install import install, list_targets, TARGETS
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __all__ = [
     "Compressor",
     "CompressionMode",
@@ -18,4 +19,7 @@ __all__ = [
     "AdaptiveResult",
     "count_tokens",
     "count_tokens_method",
+    "install",
+    "list_targets",
+    "TARGETS",
 ]

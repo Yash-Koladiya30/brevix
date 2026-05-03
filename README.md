@@ -2,7 +2,9 @@
 
 > Compress LLM output safely. Save tokens without breaking your code.
 
-Brevix is a Claude Code plugin (and CLI) that reduces LLM output tokens by 40-75% using terse, fragment-style responses — **with built-in accuracy checking** so compression never silently breaks your work.
+**Brevix** is a universal output-compression layer for LLM coding tools. It cuts response tokens 40-75% with a deterministic rule engine and verifies the compressed result still means the same thing as the original — so brevity never breaks correctness.
+
+Works with **Claude Code, Cursor, Windsurf, OpenAI Codex CLI, Google Antigravity, GitHub Copilot Chat, Aider, Continue.dev, Cline, Roo Code, Zed AI**, and any tool that reads `AGENTS.md`.
 
 Inspired by [Caveman](https://github.com/JuliusBrussee/caveman). Built for production.
 
@@ -13,26 +15,20 @@ Inspired by [Caveman](https://github.com/JuliusBrussee/caveman). Built for produ
 | Feature | Caveman | **Brevix** |
 |---------|---------|------------|
 | Lite / Full / Ultra modes | ✅ | ✅ |
+| Adaptive (auto) mode | ❌ | ✅ |
 | Slash commands | ✅ | ✅ |
-| Multi-agent support | ✅ | ✅ (Claude Code first, more coming) |
 | **Accuracy Guard** (semantic check) | ❌ | ✅ |
 | **Auto-warn on meaning loss** | ❌ | ✅ |
 | **Local stats counter** | basic | ✅ |
-| **One-click expand to full** | ❌ | ✅ (planned) |
+| **Multi-platform installer** (Cursor, Codex, Aider, …) | ❌ | ✅ |
+| Protected regions (code/URL/errors) | partial | ✅ |
 | Free + MIT | ✅ | ✅ |
 
-**Killer differentiator:** Brevix verifies compressed output preserves meaning before showing it to you. Caveman compresses blindly.
+**Killer differentiator:** Brevix verifies compressed output preserves meaning before showing it. Caveman compresses blindly.
 
 ---
 
 ## Install (30 sec)
-
-### Claude Code plugin
-
-```
-/plugin marketplace add Yash-Koladiya30/brevix
-/plugin install brevix@brevix
-```
 
 ### Python CLI
 
@@ -49,16 +45,47 @@ Or one-liner:
 curl -fsSL https://raw.githubusercontent.com/Yash-Koladiya30/brevix/main/install.sh | bash
 ```
 
+### Plug into your LLM coding tool
+
+Pick your tool (one command per project):
+
+```bash
+brevix install claude-code     # Claude Code plugin layout
+brevix install cursor          # .cursor/rules/brevix.mdc
+brevix install windsurf        # .windsurf/rules/brevix.md
+brevix install codex           # AGENTS.md (OpenAI Codex CLI)
+brevix install antigravity     # AGENTS.md (Google Antigravity)
+brevix install copilot         # .github/copilot-instructions.md
+brevix install aider           # CONVENTIONS.md + .aider.conf.yml
+brevix install continue        # .continue/rules/brevix.md
+brevix install cline           # .clinerules
+brevix install roo             # .roo/rules/brevix.md
+brevix install zed             # .rules
+brevix install agents-md       # universal AGENTS.md (cross-tool standard)
+brevix install all             # everything above
+brevix install --list          # show all targets
+```
+
+Files written are deterministic and idempotent — re-running updates the Brevix block, leaves your other content alone.
+
+### Claude Code marketplace (one-line)
+
+```
+/plugin marketplace add Yash-Koladiya30/brevix
+/plugin install brevix@brevix
+```
+
 ---
 
 ## Usage
 
-### In Claude Code
+### Slash commands (Claude Code, Cursor, etc.)
 
 ```
 /brevix                # toggle on (full mode)
 /brevix lite           # gentle compression
 /brevix ultra          # max compression
+/brevix auto           # pick best mode per response
 /brevix off            # disable
 /brevix-commit         # terse Conventional Commit message
 /brevix-check          # run Accuracy Guard on a snippet
@@ -76,17 +103,20 @@ brevix check "original" "compressed"
 brevix count "how many tokens?"
 brevix stats                      # cumulative savings
 brevix stats --reset
+brevix install cursor             # generate platform rules
 ```
 
 ---
 
 ## How Accuracy Guard works
 
-1. Brevix compresses output using rule engine
-2. Embeds both compressed and full versions locally (sentence-transformers, no API cost)
-3. Computes cosine similarity
-4. If similarity < threshold (default 0.85), warns you or auto-falls back to full
-5. Result: compression you can trust on production code, specs, contracts
+1. Brevix compresses output using the rule engine.
+2. Embeds both compressed and original locally (`sentence-transformers`, no API cost).
+3. Computes cosine similarity.
+4. If similarity < threshold (default 0.85): warn or, in `--strict` mode, fall back to original.
+5. Without `sentence-transformers` installed, falls back to a content-word containment metric (drops stopwords without penalty — fair to compression).
+
+Result: compression you can trust on production code, specs, contracts.
 
 ---
 
@@ -106,11 +136,12 @@ brevix stats --reset
 
 - [x] Core compression engine
 - [x] Claude Code plugin
-- [x] Accuracy Guard
-- [x] Local stats
-- [ ] VSCode extension
-- [ ] Cursor / Codex / Gemini CLI support
-- [ ] Adaptive compression (auto-pick mode per task)
+- [x] Accuracy Guard (semantic + content-word fallback)
+- [x] Local stats counter
+- [x] Adaptive (auto) mode
+- [x] Multi-platform installer (Cursor, Windsurf, Codex, Antigravity, Copilot, Aider, Continue, Cline, Roo, Zed, AGENTS.md)
+- [ ] VSCode extension UI
+- [ ] One-click expand to full
 - [ ] Two-way compression (input + output)
 - [ ] Web dashboard (team tier, paid)
 
@@ -124,4 +155,4 @@ MIT — free for personal and commercial use.
 
 ## Contributing
 
-Issues and PRs welcome. See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
+Issues and PRs welcome. See [docs/](./docs/).
