@@ -4,6 +4,9 @@
 
 [![CI](https://github.com/Yash-Koladiya30/brevix/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Yash-Koladiya30/brevix/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-78%20passing-brightgreen)](https://github.com/Yash-Koladiya30/brevix/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/brevix.svg?label=PyPI)](https://pypi.org/project/brevix/)
+[![npm](https://img.shields.io/npm/v/brevix-shrink.svg?label=npm%20brevix-shrink)](https://www.npmjs.com/package/brevix-shrink)
+[![skills.sh](https://img.shields.io/badge/skills.sh-Yash--Koladiya30%2Fbrevix-0EA5E9)](https://skills.sh/Yash-Koladiya30/brevix)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-8A2BE2)](https://github.com/Yash-Koladiya30/brevix)
