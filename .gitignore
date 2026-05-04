@@ -18,3 +18,9 @@ node_modules/
 *.swp
 ~/.brevix/
 .claude/settings.local.json
+.claude/settings.json
+.claude/skills/
+.agents/
+.kiro/
+.qoder/
+skills-lock.json
