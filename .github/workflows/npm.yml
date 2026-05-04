@@ -20,12 +20,15 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
-      - name: Sync package version with git tag
+
+      - name: Set package version from git tag
         working-directory: mcp-servers/brevix-shrink
         run: |
-          tag="${GITHUB_REF#refs/tags/v}"
-          if [ -z "$tag" ]; then tag="$(node -p \"require('./package.json').version\")"; fi
-          npm version "$tag" --no-git-tag-version --allow-same-version
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "Setting brevix-shrink version to ${TAG}"
+          npm pkg set version="${TAG}"
+          cat package.json | grep '"version"'
+
       - name: Publish to npm
         working-directory: mcp-servers/brevix-shrink
         run: npm publish --access public --provenance
