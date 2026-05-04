@@ -42,6 +42,17 @@ jobs:
         with:
           node-version: "20"
       - name: Smoke test brevix-shrink
+        working-directory: mcp-servers/brevix-shrink
         run: |
-          cd mcp-servers/brevix-shrink
-          node -e "import('./compress.js').then(m => { const s = { jsonrpc: '2.0', result: { tools: [{ name: 'x', description: 'Sure! In order to use this, you basically just need to call it.' }]}}; const o = m.maybeShrinkResponse({id:1, method:'tools/list'}, s); if (o.result.tools[0].description.length >= s.result.tools[0].description.length) process.exit(1); console.log('ok'); });"
+          node -e "
+          const ORIG = 'Sure! In order to use this, you basically just need to call it.';
+          import('./compress.js').then(m => {
+            const sample = { jsonrpc: '2.0', result: { tools: [{ name: 'x', description: ORIG }]}};
+            const out = m.maybeShrinkResponse({id: 1, method: 'tools/list'}, sample);
+            const before = ORIG.length;
+            const after = out.result.tools[0].description.length;
+            console.log('before:', before, 'after:', after, 'compressed:', JSON.stringify(out.result.tools[0].description));
+            if (after >= before) { console.error('FAIL: compression did not shrink'); process.exit(1); }
+            console.log('OK: shrunk', before, '->', after);
+          }).catch(e => { console.error('ERR:', e); process.exit(2); });
+          "
