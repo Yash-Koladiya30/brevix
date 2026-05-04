@@ -27,6 +27,7 @@ Mode persist until changed or session end.
 | `/brevix-review [target]` | Bug-focused review (diff/file/branch/PR). 🔴/🟡/🔵 lines |
 | `/brevix-compress <text>` | One-shot compress arbitrary text (no mode toggle) |
 | `/brevix-compress-file <path>` | Compress memory file in place with .original backup |
+| `/brevix:compress <path>` | Same as above (namespaced alias matching Caveman syntax) |
 | `/brevix-check <a> | <b>` | Run Accuracy Guard on two text snippets |
 | `/brevix-count <text>` | Count tokens (tiktoken or char/4 fallback) |
 | `/brevix-install <target>` | Install Brevix rules into project for given tool |
