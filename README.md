@@ -51,6 +51,24 @@ curl -fsSL https://raw.githubusercontent.com/Yash-Koladiya30/brevix/main/install
 irm https://raw.githubusercontent.com/Yash-Koladiya30/brevix/main/install.ps1 | iex
 ```
 
+### Via `skills` CLI (one command, 9 tools)
+
+Auto-installs Brevix skills into Antigravity, Claude Code, Cline, Codex, Cursor, Gemini CLI, GitHub Copilot, Kiro CLI, and Qoder simultaneously:
+
+```bash
+npx skills add https://github.com/Yash-Koladiya30/brevix
+```
+
+Or pick a specific skill:
+
+```bash
+npx skills add https://github.com/Yash-Koladiya30/brevix --skill brevix
+npx skills add https://github.com/Yash-Koladiya30/brevix --skill brevix-commit
+npx skills add https://github.com/Yash-Koladiya30/brevix --skill brevix-stats
+```
+
+Listing: https://skills.sh/Yash-Koladiya30/brevix
+
 ### Manual
 
 ```bash
