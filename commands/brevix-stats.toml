@@ -1,0 +1,15 @@
+description = "Show local Brevix compression stats — tokens saved, $ saved, breakdown by mode."
+
+prompt = """Run Brevix stats based on `{{args}}`:
+- If args contains `--reset` → run `brevix stats --reset`
+- If args contains `--real` → run `brevix stats --real {{args}}`
+- If args contains `--share` → run `brevix stats --share {{args}}`
+- Otherwise → run `brevix stats`
+
+Pass output through as-is (already terse).
+
+If `brevix` CLI not installed, instruct user:
+```bash
+pip install brevix
+```
+"""

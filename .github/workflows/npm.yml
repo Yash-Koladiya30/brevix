@@ -31,6 +31,6 @@ jobs:
 
       - name: Publish to npm
         working-directory: mcp-servers/brevix-shrink
-        run: npm publish --access public --provenance
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

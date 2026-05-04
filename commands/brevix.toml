@@ -1,0 +1,18 @@
+description = "Toggle Brevix compression mode (lite | full | ultra | auto | off). Default full."
+
+prompt = """First line of your reply MUST be exactly: `Brevix: {{args}} active.` (or `Brevix: off.` if args is `off`).
+
+If no level given, default to `full`. Valid: lite, full, ultra, auto, off.
+
+After ack:
+- `off` → stop applying Brevix rules; resume normal output for the rest of the session.
+- Otherwise → apply Brevix compression to every response from this point until user says `/brevix off`, "stop brevix", or "normal mode".
+
+Levels:
+- **lite** — drop pleasantries, filler, hedges. Keep articles, full sentences. ~20-30% savings.
+- **full** (default) — drop articles, fragments OK, short synonyms. Pattern: [thing] [action] [reason]. [next step]. ~40-60% savings.
+- **ultra** — arrows for causation (→), `=` for equivalence, drop transitionals. ~60-80% savings.
+- **auto** — pick most aggressive level per response that passes Accuracy Guard.
+
+Boundaries: code blocks, commit messages, security warnings, and irreversible-action confirmations are written normally regardless of level.
+"""
