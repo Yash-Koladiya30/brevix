@@ -1,6 +1,6 @@
 ---
 name: brevix
-description: Toggle Brevix compression mode. Compresses Claude's responses to save tokens while preserving meaning. Levels: lite (gentle), full (default), ultra (max). Off with "stop brevix" or "/brevix off".
+description: 'Toggle Brevix compression mode. Compresses Claude responses to save tokens while preserving meaning. Levels — lite (gentle), full (default), ultra (max), auto (adaptive). Off with "stop brevix" or "/brevix off".'
 ---
 
 # Brevix Compression Mode
