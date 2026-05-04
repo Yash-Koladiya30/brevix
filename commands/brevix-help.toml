@@ -1,0 +1,84 @@
+description = "Display Brevix quick-reference card. Modes, skills, commands, config."
+
+prompt = """One-shot output. Do NOT change mode, write files, or persist anything. Show this reference card exactly as written below — already terse:
+
+# Brevix Help
+
+Safe LLM output compression with semantic verification.
+
+## Modes
+
+| Mode | Trigger | What change |
+|------|---------|-------------|
+| **Lite** | `/brevix lite` | Drop pleasantries, filler, hedges. Keep articles + full sentences. |
+| **Full** | `/brevix` | Drop articles, filler, pleasantries, hedging. Fragments OK. Default. |
+| **Ultra** | `/brevix ultra` | Drop transitionals. Use → for causation. Use = for equivalence. |
+| **Auto** | `/brevix auto` | Adaptive. Pick most aggressive level that passes Accuracy Guard. |
+
+Mode persist until changed or session end.
+
+## Slash Commands
+
+| Command | What it does |
+|---------|--------------|
+| `/brevix [level]` | Activate Brevix at level (default: full) |
+| `/brevix off` | Disable Brevix |
+| `/brevix-commit` | Terse Conventional Commit message from staged diff |
+| `/brevix-check <a> | <b>` | Run Accuracy Guard on two text snippets |
+| `/brevix-stats` | Show local compression stats (tokens, $, by mode) |
+| `/brevix-compress-file <path>` | Compress memory file in place with .original backup |
+| `/brevix-help` | This card |
+
+## Subagents
+
+| Agent | What |
+|-------|------|
+| `brevix-investigator` | Read-only code locator. `path:line — symbol — note` |
+| `brevix-builder` | Surgical 1-2 file edits with verification |
+| `brevix-reviewer` | Bug-focused diff review. `path:line: 🔴 bug: …. fix.` |
+
+## CLI (after `pip install brevix`)
+
+```
+brevix compress "text" --mode auto -v
+brevix compress-file CLAUDE.md
+brevix stats --real --since 7d
+brevix check "original" "compressed"
+brevix install cursor
+brevix install --list
+brevix count "how many tokens?"
+```
+
+## Deactivate
+
+`/brevix off`, "stop brevix", or "normal mode". Resume with `/brevix`.
+
+## Configure default level
+
+Edit `~/.brevix/config.json`:
+```json
+{ "level": "full", "autoActivate": true }
+```
+
+`autoActivate: false` → skip SessionStart auto-enable. Manual `/brevix` only.
+
+## Accuracy Guard
+
+After compression, semantic similarity score vs original.
+- threshold ≥ 0.85 → emit compressed
+- below → warn (or fall back to original in `--strict`)
+
+Install full guard: `pip install 'brevix[guard]'` (semantic, ~80MB).
+Default fallback: content-word containment (no extra deps).
+
+## Boundaries
+
+Code blocks, commit messages, security warnings, and irreversible-action confirmations are written normally regardless of level.
+
+## More
+
+- Repo: https://github.com/Yash-Koladiya30/brevix
+- PyPI: https://pypi.org/project/brevix/
+- npm (MCP proxy): https://www.npmjs.com/package/brevix-shrink
+- skills.sh: https://skills.sh/Yash-Koladiya30/brevix
+"""
