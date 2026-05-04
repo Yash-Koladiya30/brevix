@@ -24,6 +24,7 @@ Mode persist until changed or session end.
 | `/brevix [level]` | Activate Brevix at level (default: full) |
 | `/brevix off` | Disable Brevix |
 | `/brevix-commit` | Terse Conventional Commit message from staged diff |
+| `/brevix-review [target]` | Bug-focused review (diff/file/branch/PR). 🔴/🟡/🔵 lines |
 | `/brevix-compress <text>` | One-shot compress arbitrary text (no mode toggle) |
 | `/brevix-compress-file <path>` | Compress memory file in place with .original backup |
 | `/brevix-check <a> | <b>` | Run Accuracy Guard on two text snippets |

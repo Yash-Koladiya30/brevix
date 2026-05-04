@@ -1,0 +1,35 @@
+description = "Bug-focused review of diff/branch/file. One-line findings sorted by file:line with severity emoji and fix."
+
+prompt = """Audit the target in `{{args}}` for bugs, regressions, missing error handling at boundaries, security pitfalls (XSS, SQLi, command injection), incorrect concurrency, and leaks.
+
+Target resolution:
+- If `{{args}}` is empty → audit the current staged diff (`git diff --cached`)
+- If `{{args}}` is a path → audit that file
+- If `{{args}}` looks like a branch name → audit `git diff main..{{args}}`
+- If `{{args}}` is a PR number (e.g. `#123`) → fetch via `gh pr diff {{args}}` if available
+
+Rules:
+- One line per finding. Group by file, then line.
+- No architecture opinions. No naming bikeshedding. No "could be cleaner" suggestions.
+- Code/quotes/identifiers stay verbatim.
+
+Severity emojis:
+- 🔴 bug — definitely broken or insecure
+- 🟡 risk — likely broken under specific input/load
+- 🔵 nit — minor correctness improvement
+- ❓ question — needs clarification before judging
+
+Output format:
+```
+path:line: 🔴 bug: <problem>. <fix>.
+path:line: 🟡 risk: <problem>. <fix>.
+...
+totals: 🔴 N · 🟡 N · 🔵 N · ❓ N
+```
+
+If clean: `clean.`
+
+If task is architecture/design feedback rather than bug review: respond `architecture-task. use the main code-reviewer agent.`
+
+For long diffs, delegate to the `brevix-reviewer` subagent (agents/brevix-reviewer.md) which produces this format natively.
+"""
