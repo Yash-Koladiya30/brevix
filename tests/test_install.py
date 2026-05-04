@@ -13,9 +13,28 @@ from brevix.install import (
 
 
 def test_list_targets_covers_major_tools():
-    expected = {"claude-code", "cursor", "windsurf", "codex", "antigravity",
-                "copilot", "aider", "continue", "cline", "roo", "zed", "agents-md"}
+    expected = {
+        "claude-code", "cursor", "windsurf", "codex", "antigravity", "copilot",
+        "aider", "continue", "cline", "roo", "zed", "agents-md",
+        "gemini", "augment", "kilo", "openhands", "tabnine", "warp", "replit",
+        "sourcegraph-amp",
+    }
     assert expected.issubset(set(TARGETS))
+
+
+def test_codex_writes_hooks_json(tmp_path):
+    files = install("codex", tmp_path)
+    rels = {str(f.relative_to(tmp_path)) for f in files}
+    assert ".codex/hooks.json" in rels
+    body = (tmp_path / ".codex" / "hooks.json").read_text(encoding="utf-8")
+    assert "$brevix" in body
+
+
+def test_gemini_writes_extension_and_md(tmp_path):
+    files = install("gemini", tmp_path)
+    rels = {str(f.relative_to(tmp_path)) for f in files}
+    assert "gemini-extension.json" in rels
+    assert "GEMINI.md" in rels
 
 
 @pytest.mark.parametrize("target", list(TARGETS))

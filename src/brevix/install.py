@@ -85,8 +85,26 @@ def install_windsurf(root: Path, rules: str) -> list[Path]:
 
 
 def install_codex(root: Path, rules: str) -> list[Path]:
-    # OpenAI Codex CLI follows the AGENTS.md convention.
-    return [_merge_section(root / "AGENTS.md", rules)]
+    """OpenAI Codex CLI: AGENTS.md + .codex/hooks.json for auto-activation.
+
+    Codex doesn't support slash commands, so users invoke via `$brevix` prefix.
+    """
+    written = [_merge_section(root / "AGENTS.md", rules)]
+    hooks_json = (
+        '{\n'
+        '  "version": 1,\n'
+        '  "hooks": {\n'
+        '    "session_start": [\n'
+        '      { "type": "context", "content": '
+        '"Brevix mode active. Compress prose 40-75%. Drop articles/filler/pleasantries/hedges. '
+        'Code/commits/security stay normal. Switch with $brevix lite|full|ultra|auto. '
+        'Stop with $brevix off." }\n'
+        '    ]\n'
+        '  }\n'
+        '}\n'
+    )
+    written.append(_write(root / ".codex" / "hooks.json", hooks_json))
+    return written
 
 
 def install_antigravity(root: Path, rules: str) -> list[Path]:
@@ -134,13 +152,57 @@ def install_agents_md(root: Path, rules: str) -> list[Path]:
     return [_merge_section(root / "AGENTS.md", rules)]
 
 
+def install_gemini(root: Path, rules: str) -> list[Path]:
+    """Google Gemini CLI extension: gemini-extension.json + GEMINI.md."""
+    import json as _json
+    ext = {
+        "name": "brevix",
+        "version": "0.4.0",
+        "description": "Brevix output compression for Gemini CLI.",
+        "files": ["GEMINI.md"],
+    }
+    written = [
+        _write(root / "gemini-extension.json", _json.dumps(ext, indent=2) + "\n"),
+        _write(root / "GEMINI.md", rules),
+    ]
+    return written
+
+
+def install_augment(root: Path, rules: str) -> list[Path]:
+    return [_write(root / ".augment" / "rules" / "brevix.md", rules)]
+
+
+def install_kilo(root: Path, rules: str) -> list[Path]:
+    return [_write(root / ".kilocode" / "rules" / "brevix.md", rules)]
+
+
+def install_openhands(root: Path, rules: str) -> list[Path]:
+    return [_merge_section(root / ".openhands" / "microagents" / "brevix.md", rules)]
+
+
+def install_tabnine(root: Path, rules: str) -> list[Path]:
+    return [_write(root / ".tabnine" / "rules" / "brevix.md", rules)]
+
+
+def install_warp(root: Path, rules: str) -> list[Path]:
+    return [_merge_section(root / ".warp" / "RULES.md", rules)]
+
+
+def install_replit(root: Path, rules: str) -> list[Path]:
+    return [_merge_section(root / ".replit" / "ai-rules.md", rules)]
+
+
+def install_sourcegraph_amp(root: Path, rules: str) -> list[Path]:
+    return [_write(root / ".amp" / "rules" / "brevix.md", rules)]
+
+
 # --- Registry ---
 
 TARGETS: dict[str, Target] = {
     "claude-code": Target("claude-code", "Claude Code plugin (.claude-plugin/, skills/, commands/)", install_claude_code),
     "cursor": Target("cursor", "Cursor IDE rules (.cursor/rules/brevix.mdc)", install_cursor),
     "windsurf": Target("windsurf", "Windsurf rules (.windsurf/rules/brevix.md)", install_windsurf),
-    "codex": Target("codex", "OpenAI Codex CLI (AGENTS.md)", install_codex),
+    "codex": Target("codex", "OpenAI Codex CLI (AGENTS.md + .codex/hooks.json)", install_codex),
     "antigravity": Target("antigravity", "Google Antigravity (AGENTS.md)", install_antigravity),
     "copilot": Target("copilot", "GitHub Copilot Chat (.github/copilot-instructions.md)", install_copilot),
     "aider": Target("aider", "Aider (CONVENTIONS.md + .aider.conf.yml)", install_aider),
@@ -148,6 +210,14 @@ TARGETS: dict[str, Target] = {
     "cline": Target("cline", "Cline (.clinerules)", install_cline),
     "roo": Target("roo", "Roo Code (.roo/rules/brevix.md)", install_roo),
     "zed": Target("zed", "Zed AI (.rules)", install_zed),
+    "gemini": Target("gemini", "Google Gemini CLI (gemini-extension.json + GEMINI.md)", install_gemini),
+    "augment": Target("augment", "Augment Code (.augment/rules/brevix.md)", install_augment),
+    "kilo": Target("kilo", "Kilo Code (.kilocode/rules/brevix.md)", install_kilo),
+    "openhands": Target("openhands", "OpenHands (.openhands/microagents/brevix.md)", install_openhands),
+    "tabnine": Target("tabnine", "Tabnine (.tabnine/rules/brevix.md)", install_tabnine),
+    "warp": Target("warp", "Warp Terminal (.warp/RULES.md)", install_warp),
+    "replit": Target("replit", "Replit AI (.replit/ai-rules.md)", install_replit),
+    "sourcegraph-amp": Target("sourcegraph-amp", "Sourcegraph Amp (.amp/rules/brevix.md)", install_sourcegraph_amp),
     "agents-md": Target("agents-md", "Universal AGENTS.md (cross-tool standard)", install_agents_md),
 }
 
@@ -186,7 +256,7 @@ def _claude_plugin_json() -> str:
         "license": "MIT",
         "homepage": "https://github.com/Yash-Koladiya30/brevix",
         "repository": "https://github.com/Yash-Koladiya30/brevix",
-        "keywords": ["compression", "tokens", "cost-optimization", "caveman", "accuracy-guard"],
+        "keywords": ["compression", "tokens", "cost-optimization", "accuracy-guard", "semantic-verification", "adaptive-mode", "rule-engine"],
     }
     return json.dumps(payload, indent=2) + "\n"
 
@@ -204,7 +274,7 @@ def _claude_marketplace_json() -> str:
                 "description": "Compress Claude responses 40-75% with semantic Accuracy Guard.",
                 "version": "0.3.0",
                 "category": "productivity",
-                "tags": ["compression", "tokens", "cost", "caveman", "guard"],
+                "tags": ["compression", "tokens", "cost-optimization", "accuracy-guard", "semantic-verification", "adaptive-mode"],
                 "license": "MIT",
                 "homepage": "https://github.com/Yash-Koladiya30/brevix",
             }

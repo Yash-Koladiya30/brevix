@@ -18,3 +18,4 @@ node_modules/
 *.swp
 ~/.brevix/
 .claude/settings.local.json
+.github/workflows/

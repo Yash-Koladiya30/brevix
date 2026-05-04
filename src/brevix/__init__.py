@@ -7,7 +7,7 @@ from brevix.adaptive import pick_mode, AdaptiveResult
 from brevix.tokens import count_tokens, count_tokens_method
 from brevix.install import install, list_targets, TARGETS
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = [
     "Compressor",
     "CompressionMode",

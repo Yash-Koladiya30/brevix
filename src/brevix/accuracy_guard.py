@@ -1,9 +1,13 @@
 """Accuracy Guard — semantic similarity check between original and compressed text.
 
-Killer differentiator vs caveman: verifies compression preserves meaning.
-Uses local sentence-transformers (no API cost). Falls back to a content-word
-containment metric tailored for compression (NOT Jaccard, which structurally
-penalizes legitimate compression).
+Verifies that rule-based compression preserves meaning. Uses local
+sentence-transformers (no API cost). Falls back to a content-word
+containment metric tailored for compression (NOT Jaccard, which
+structurally penalizes legitimate compression).
+
+This is what separates safe production-grade compression from a blind
+text-stripper: every output is scored against the original, and the
+caller can choose to warn, fall back, or block when meaning would be lost.
 """
 
 from __future__ import annotations

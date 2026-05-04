@@ -1,0 +1,21 @@
+{
+  "name": "brevix-shrink",
+  "version": "0.1.0",
+  "description": "MCP middleware proxy that compresses tools/list, prompts/list, and resources/list responses to save tokens. Sister project to Brevix.",
+  "bin": {
+    "brevix-shrink": "./index.js"
+  },
+  "main": "index.js",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "license": "MIT",
+  "author": "Yash Koladiya <yashkoladiya123@gmail.com>",
+  "homepage": "https://github.com/Yash-Koladiya30/brevix",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yash-Koladiya30/brevix.git",
+    "directory": "mcp-servers/brevix-shrink"
+  },
+  "keywords": ["mcp", "claude", "compression", "tokens", "brevix", "proxy"],
+  "files": ["index.js", "compress.js", "README.md"]
+}

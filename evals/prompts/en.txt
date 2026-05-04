@@ -1,0 +1,10 @@
+Why is my React component re-rendering on every parent update?
+How do I set up a PostgreSQL connection pool with proper timeouts in Node.js?
+Explain the difference between TCP and UDP for a junior developer.
+Why is my regex `^\w+@\w+\.\w+$` not matching valid emails?
+How do I implement JWT refresh tokens securely?
+What's wrong with this Python code: `for i in range(len(items)): items[i].process()` ?
+Walk me through how to debug a memory leak in a Node.js server.
+Why does my Docker container exit immediately after starting?
+How do I migrate a NOT NULL column on a 50-million-row table without downtime?
+Explain when to use useMemo vs useCallback in React.

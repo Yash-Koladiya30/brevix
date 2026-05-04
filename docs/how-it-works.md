@@ -46,11 +46,11 @@ The killer feature. After compression, Brevix can verify the compressed text sti
 3. If similarity ≥ threshold (default 0.85): pass
 4. If below: warn the user, or in `--strict` mode fall back to the original
 
-**Why this matters:** caveman-style compression can silently break meaning on dense technical text. Accuracy Guard catches it.
+**Why this matters:** rule-based compression that strips text without verification can silently break meaning on dense technical prose. Accuracy Guard catches it.
 
 **Cost:** zero — runs locally, no API calls. First run downloads the model (~80 MB cache). Subsequent runs are <100 ms per check on CPU.
 
-**Fallback:** if `sentence-transformers` is not installed, Brevix degrades to Jaccard token-overlap similarity. Less precise but no hard dependency.
+**Fallback:** if `sentence-transformers` is not installed, Brevix degrades to a content-word containment metric (drops stopwords without penalty — fair to compression). Less precise than the semantic check, but no hard dependency.
 
 ## 4. Stats
 
@@ -63,9 +63,23 @@ The killer feature. After compression, Brevix can verify the compressed text sti
 
 `brevix stats` prints a summary. No telemetry leaves your machine.
 
-## 5. Claude Code plugin
+## 5. Claude Code integration
 
-The plugin in `.claude/plugins/brevix/` ships skills (`brevix.md`, `brevix-commit.md`, `brevix-stats.md`) that Claude Code loads on demand. The compression rules are documented in the skill markdown so Claude itself follows them when generating responses — no runtime hook needed.
+The `.claude-plugin/` plugin ships skills (`skills/brevix/SKILL.md`, `skills/brevix-commit/SKILL.md`, `skills/brevix-stats/SKILL.md`), slash commands (`commands/brevix.md`, `brevix-stats.md`, `brevix-check.md`, `brevix-commit.md`, `brevix-compress-file.md`), subagents (`agents/brevix-investigator.md`, `brevix-builder.md`, `brevix-reviewer.md`), and hooks (`hooks/brevix-activate.js`, `brevix-mode-tracker.js`, `brevix-statusline.sh`).
+
+Compression rules live in skill markdown so Claude follows them while generating responses — no runtime LLM hook required.
+
+## 6. Multi-platform installer
+
+`brevix install <target>` writes platform-appropriate rule files for 20 LLM coding tools (Claude Code, Cursor, Windsurf, Codex CLI, Antigravity, Gemini CLI, Copilot, Aider, Continue, Cline, Roo, Zed, Augment, Kilo, OpenHands, Tabnine, Warp, Replit, Sourcegraph Amp, plus the universal AGENTS.md). Shared files (AGENTS.md, CONVENTIONS.md, copilot-instructions.md) use `<!-- BREVIX:BEGIN -->` / `<!-- BREVIX:END -->` markers so re-running install updates only the Brevix block, never user content.
+
+## 7. MCP middleware (`brevix-shrink`)
+
+A Node.js stdio proxy in `mcp-servers/brevix-shrink/` that wraps any upstream MCP server and compresses the description fields in `tools/list`, `prompts/list`, and `resources/list` responses. Saves input tokens for the entire session lifetime since MCP descriptions are loaded into the model's context on every turn.
+
+## 8. Eval harness
+
+`evals/llm_run.py` runs prompts through Claude under three system-prompt arms (no prompt, "be terse" control, Brevix rules) and writes a snapshot. `evals/measure.py` analyzes the snapshot offline with `tiktoken o200k_base`. The "vs control" column reports honest savings — what Brevix adds *beyond* "just be brief."
 
 ## Limits
 

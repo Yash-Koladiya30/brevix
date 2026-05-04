@@ -6,16 +6,16 @@
   },
   "metadata": {
     "description": "Brevix marketplace — safe LLM output compression for Claude Code.",
-    "version": "0.3.0"
+    "version": "0.4.0"
   },
   "plugins": [
     {
       "name": "brevix",
       "source": ".",
-      "description": "Compress Claude responses 40-75% with semantic Accuracy Guard. Lite/Full/Ultra/Auto modes. Slash commands /brevix, /brevix-commit, /brevix-check, /brevix-stats.",
-      "version": "0.3.0",
+      "description": "Compress Claude responses 40-75% with semantic Accuracy Guard. Lite/Full/Ultra/Auto modes. Slash commands /brevix, /brevix-commit, /brevix-check, /brevix-stats, /brevix-compress-file.",
+      "version": "0.4.0",
       "category": "productivity",
-      "tags": ["compression", "tokens", "cost", "caveman", "guard"],
+      "tags": ["compression", "tokens", "cost-optimization", "accuracy-guard", "semantic-verification", "adaptive-mode"],
       "license": "MIT",
       "homepage": "https://github.com/Yash-Koladiya30/brevix"
     }

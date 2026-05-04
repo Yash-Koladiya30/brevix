@@ -2,35 +2,55 @@
 
 > Compress LLM output safely. Save tokens without breaking your code.
 
+[![CI](https://img.shields.io/github/actions/workflow/status/Yash-Koladiya30/brevix/ci.yml?branch=main)](https://github.com/Yash-Koladiya30/brevix/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-8A2BE2)](https://github.com/Yash-Koladiya30/brevix)
+
 **Brevix** is a universal output-compression layer for LLM coding tools. It cuts response tokens 40-75% with a deterministic rule engine and verifies the compressed result still means the same thing as the original — so brevity never breaks correctness.
 
-Works with **Claude Code, Cursor, Windsurf, OpenAI Codex CLI, Google Antigravity, GitHub Copilot Chat, Aider, Continue.dev, Cline, Roo Code, Zed AI**, and any tool that reads `AGENTS.md`.
-
-Inspired by [Caveman](https://github.com/JuliusBrussee/caveman). Built for production.
+Works with **Claude Code, Cursor, Windsurf, OpenAI Codex CLI, Google Antigravity, Gemini CLI, GitHub Copilot Chat, Aider, Continue.dev, Cline, Roo Code, Zed AI, Augment, Kilo, OpenHands, Tabnine, Warp, Replit, Sourcegraph Amp**, plus any tool that reads `AGENTS.md`.
 
 ---
 
-## Why Brevix?
+## What Brevix gives you
 
-| Feature | Caveman | **Brevix** |
-|---------|---------|------------|
-| Lite / Full / Ultra modes | ✅ | ✅ |
-| Adaptive (auto) mode | ❌ | ✅ |
-| Slash commands | ✅ | ✅ |
-| **Accuracy Guard** (semantic check) | ❌ | ✅ |
-| **Auto-warn on meaning loss** | ❌ | ✅ |
-| **Local stats counter** | basic | ✅ |
-| **Multi-platform installer** (Cursor, Codex, Aider, …) | ❌ | ✅ |
-| Protected regions (code/URL/errors) | partial | ✅ |
-| Free + MIT | ✅ | ✅ |
+| Capability | Brevix |
+|------------|:-:|
+| Rule-based compression — Lite, Full, Ultra | ✅ |
+| **Adaptive Auto mode** (picks safest aggressive level per response) | ✅ |
+| **Accuracy Guard** — semantic similarity verification before emit | ✅ |
+| **Strict mode** — auto-fall-back to original when meaning would be lost | ✅ |
+| Protected regions — code, URLs, error quotes are never touched | ✅ |
+| File-level compression with `.original` backup (CLAUDE.md, AGENTS.md, …) | ✅ |
+| MCP middleware (`brevix-shrink`) — compresses tool/prompt/resource descriptions | ✅ |
+| Real Claude Code session-log token counts (`stats --real --since 7d`) | ✅ |
+| Statusline badge — `[BREVIX] ⛏ X.Xk saved` | ✅ |
+| Subagents — investigator / builder / reviewer with terse output formats | ✅ |
+| Three-arm A/B eval harness with `tiktoken o200k_base` | ✅ |
+| 20 platform install targets, idempotent `BREVIX:BEGIN/END` markers | ✅ |
+| 100% local — no telemetry, no API calls in the engine | ✅ |
+| Free + MIT | ✅ |
 
-**Killer differentiator:** Brevix verifies compressed output preserves meaning before showing it. Caveman compresses blindly.
+**Brevix's edge:** every compressed output is scored against the original locally. If similarity drops below your threshold, you get warned — or in strict mode, the original is emitted instead. No silent meaning loss on dense technical prose.
 
 ---
 
-## Install (30 sec)
+## Install
 
-### Python CLI
+### One-liner (macOS / Linux / WSL)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Yash-Koladiya30/brevix/main/install.sh | bash -s -- --all
+```
+
+### Windows (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/Yash-Koladiya30/brevix/main/install.ps1 | iex
+```
+
+### Manual
 
 ```bash
 pip install brevix                  # core
@@ -39,40 +59,44 @@ pip install 'brevix[tokens]'        # + accurate tiktoken counts
 pip install 'brevix[all]'           # everything
 ```
 
-Or one-liner:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Yash-Koladiya30/brevix/main/install.sh | bash
-```
-
 ### Plug into your LLM coding tool
 
-Pick your tool (one command per project):
-
 ```bash
-brevix install claude-code     # Claude Code plugin layout
-brevix install cursor          # .cursor/rules/brevix.mdc
-brevix install windsurf        # .windsurf/rules/brevix.md
-brevix install codex           # AGENTS.md (OpenAI Codex CLI)
-brevix install antigravity     # AGENTS.md (Google Antigravity)
-brevix install copilot         # .github/copilot-instructions.md
-brevix install aider           # CONVENTIONS.md + .aider.conf.yml
-brevix install continue        # .continue/rules/brevix.md
-brevix install cline           # .clinerules
-brevix install roo             # .roo/rules/brevix.md
-brevix install zed             # .rules
-brevix install agents-md       # universal AGENTS.md (cross-tool standard)
-brevix install all             # everything above
-brevix install --list          # show all targets
+brevix install --list                # show all 20 targets
+brevix install claude-code           # Claude Code plugin layout
+brevix install cursor                # .cursor/rules/brevix.mdc
+brevix install codex                 # AGENTS.md + .codex/hooks.json
+brevix install gemini                # gemini-extension.json + GEMINI.md
+brevix install all                   # write rule files for every tool
 ```
 
-Files written are deterministic and idempotent — re-running updates the Brevix block, leaves your other content alone.
+Idempotent — re-running updates the Brevix block, leaves your other content alone.
 
-### Claude Code marketplace (one-line)
+### Claude Code marketplace
 
 ```
 /plugin marketplace add Yash-Koladiya30/brevix
 /plugin install brevix@brevix
+```
+
+### MCP middleware (compress upstream MCP server descriptions)
+
+```bash
+npm install -g brevix-shrink
+```
+
+Then wrap any MCP server in your Claude config:
+
+```json
+{
+  "mcpServers": {
+    "fs-shrunk": {
+      "command": "npx",
+      "args": ["brevix-shrink", "npx", "-y",
+               "@modelcontextprotocol/server-filesystem", "/tmp"]
+    }
+  }
+}
 ```
 
 ---
@@ -92,29 +116,52 @@ Files written are deterministic and idempotent — re-running updates the Brevix
 /brevix-stats          # show savings
 ```
 
+For Codex CLI (no slash commands), use `$brevix lite|full|ultra|auto|off`.
+
 ### CLI
 
 ```bash
+# Output compression
 brevix compress "Your verbose text here" --mode full
-brevix compress -                 # stdin
-brevix compress . --mode auto -v  # adaptive mode picks best
+brevix compress -                      # stdin
+brevix compress . --mode auto -v       # adaptive picks best
 brevix compress . --guard --strict --threshold 0.85
+
+# File compression (memory files like CLAUDE.md, AGENTS.md, project notes)
+brevix compress-file CLAUDE.md         # writes .original.md backup
+brevix compress-file CLAUDE.md --dry-run
+
+# Stats
+brevix stats                           # estimated, in-process
+brevix stats --real --since 7d         # parsed from Claude Code session logs
+brevix stats --share                   # tweet-ready one-liner
+brevix stats --reset
+
+# Verification
 brevix check "original" "compressed"
 brevix count "how many tokens?"
-brevix stats                      # cumulative savings
-brevix stats --reset
-brevix install cursor             # generate platform rules
+
+# Install rules into a project
+brevix install cursor
+brevix install --list
 ```
+
+### Subagents (Claude Code)
+
+`agents/` ships three small, focused subagents that emit ~60% smaller tool results than vanilla agents:
+
+- **brevix-investigator** — read-only code locator (`path:line — symbol — note`)
+- **brevix-builder** — surgical 1-2 file edits with verification
+- **brevix-reviewer** — bug-focused diff review (`path:line: 🔴 bug: …. fix.`)
 
 ---
 
 ## How Accuracy Guard works
 
-1. Brevix compresses output using the rule engine.
-2. Embeds both compressed and original locally (`sentence-transformers`, no API cost).
-3. Computes cosine similarity.
-4. If similarity < threshold (default 0.85): warn or, in `--strict` mode, fall back to original.
-5. Without `sentence-transformers` installed, falls back to a content-word containment metric (drops stopwords without penalty — fair to compression).
+1. Compress output via the rule engine.
+2. Score the original vs compressed text with a **local sentence-transformer** (no API cost).
+3. If similarity ≥ threshold (default 0.85) → emit compressed. Otherwise warn, or in `--strict` mode fall back to original.
+4. Without `sentence-transformers` installed, falls back to **content-word containment** (drops stopwords without penalty — fair to compression).
 
 Result: compression you can trust on production code, specs, contracts.
 
@@ -132,18 +179,48 @@ Result: compression you can trust on production code, specs, contracts.
 
 ---
 
+## Benchmarks
+
+Reproducible three-arm A/B harness in [`evals/`](./evals). Compares no-system-prompt vs "be terse" control vs Brevix on 10 developer prompts.
+
+```
+arm       n   median  mean   total  vs baseline  vs control
+baseline  10  221     247.3  2473   —            —
+control   10  178     191.6  1916   22.5%        —
+brevix    10  119     128.4  1284   48.1%        33.0%
+```
+
+Run yourself:
+
+```bash
+pip install 'brevix[all]' anthropic
+export ANTHROPIC_API_KEY=...
+python evals/llm_run.py --model claude-sonnet-4-6
+python evals/measure.py
+```
+
+The `vs control` column is the honest savings — what Brevix adds *beyond* "just be brief."
+
+---
+
 ## Roadmap
 
-- [x] Core compression engine
-- [x] Claude Code plugin
+- [x] Core compression engine (lite/full/ultra)
+- [x] Adaptive (auto) mode
 - [x] Accuracy Guard (semantic + content-word fallback)
 - [x] Local stats counter
-- [x] Adaptive (auto) mode
-- [x] Multi-platform installer (Cursor, Windsurf, Codex, Antigravity, Copilot, Aider, Continue, Cline, Roo, Zed, AGENTS.md)
+- [x] Multi-platform installer (20 targets)
+- [x] File-level compression (`brevix compress-file`)
+- [x] MCP middleware (`brevix-shrink`)
+- [x] Statusline badge + Claude Code hooks
+- [x] Subagents (investigator/builder/reviewer)
+- [x] Three-arm eval harness
+- [x] PowerShell installer + uninstaller
 - [ ] VSCode extension UI
-- [ ] One-click expand to full
-- [ ] Two-way compression (input + output)
-- [ ] Web dashboard (team tier, paid)
+- [ ] Browser extension (claude.ai, chatgpt.com web)
+- [ ] Two-way compression (compress prompts before send)
+- [ ] Custom user-defined rule packs
+- [ ] Web dashboard (team tier)
 
 ---
 
@@ -155,4 +232,4 @@ MIT — free for personal and commercial use.
 
 ## Contributing
 
-Issues and PRs welcome. See [docs/](./docs/).
+Issues and PRs welcome. See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md).
