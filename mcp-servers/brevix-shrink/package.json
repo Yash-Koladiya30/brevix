@@ -1,6 +1,6 @@
 {
   "name": "brevix-shrink",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "MCP middleware proxy that compresses tools/list, prompts/list, and resources/list responses to save tokens. Sister project to Brevix.",
   "bin": {
     "brevix-shrink": "./index.js"
@@ -16,6 +16,12 @@
     "url": "git+https://github.com/Yash-Koladiya30/brevix.git",
     "directory": "mcp-servers/brevix-shrink"
   },
-  "keywords": ["mcp", "claude", "compression", "tokens", "brevix", "proxy"],
-  "files": ["index.js", "compress.js", "README.md"]
+  "bugs": {
+    "url": "https://github.com/Yash-Koladiya30/brevix/issues"
+  },
+  "keywords": ["mcp", "claude", "compression", "tokens", "brevix", "proxy", "model-context-protocol"],
+  "files": ["index.js", "compress.js", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  }
 }

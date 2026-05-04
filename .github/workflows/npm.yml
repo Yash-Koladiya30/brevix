@@ -1,0 +1,33 @@
+name: Publish brevix-shrink to npm
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/brevix-shrink
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Sync package version with git tag
+        working-directory: mcp-servers/brevix-shrink
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          if [ -z "$tag" ]; then tag="$(node -p \"require('./package.json').version\")"; fi
+          npm version "$tag" --no-git-tag-version --allow-same-version
+      - name: Publish to npm
+        working-directory: mcp-servers/brevix-shrink
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

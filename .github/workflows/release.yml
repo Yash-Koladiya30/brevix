@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          prev=$(git tag --sort=-creatordate | grep -v "^${tag}$" | head -n1 || true)
+          {
+            echo "## What's in ${tag}"
+            echo
+            if [ -n "${prev}" ]; then
+              echo "Changes since ${prev}:"
+              echo
+              git log "${prev}..${tag}" --pretty=format:"- %s (%h)" --no-merges
+            else
+              echo "First tagged release."
+              echo
+              git log "${tag}" --pretty=format:"- %s (%h)" --no-merges | head -n 30
+            fi
+            echo
+            echo
+            echo "## Install"
+            echo
+            echo '```bash'
+            echo "pip install brevix==${tag#v}"
+            echo "npm install -g brevix-shrink"
+            echo '```'
+            echo
+            echo "## Claude Code marketplace"
+            echo
+            echo '```'
+            echo "/plugin marketplace add Yash-Koladiya30/brevix"
+            echo "/plugin install brevix@brevix"
+            echo '```'
+          } > RELEASE_NOTES.md
+          cat RELEASE_NOTES.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
