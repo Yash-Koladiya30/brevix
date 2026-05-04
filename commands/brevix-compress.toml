@@ -1,0 +1,20 @@
+description = "Compress arbitrary text on demand. One-shot, doesn't toggle Brevix mode."
+
+prompt = """Compress the text in `{{args}}` using Brevix rules.
+
+Default mode: full. Override by prefixing with --mode lite|full|ultra|auto.
+
+Run:
+```bash
+brevix compress {{args}} -v
+```
+
+Show:
+1. Compressed text (primary output)
+2. Stats line: chars saved, % saved, tokens saved
+3. Guard score if `--guard` flag passed
+
+If `brevix` CLI not installed, instruct: `pip install brevix`.
+
+Note: this is a one-shot compression. Does NOT activate Brevix mode for future replies. For mode toggle, use `/brevix [level]`.
+"""

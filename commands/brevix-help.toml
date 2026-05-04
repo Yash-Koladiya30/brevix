@@ -24,9 +24,12 @@ Mode persist until changed or session end.
 | `/brevix [level]` | Activate Brevix at level (default: full) |
 | `/brevix off` | Disable Brevix |
 | `/brevix-commit` | Terse Conventional Commit message from staged diff |
-| `/brevix-check <a> | <b>` | Run Accuracy Guard on two text snippets |
-| `/brevix-stats` | Show local compression stats (tokens, $, by mode) |
+| `/brevix-compress <text>` | One-shot compress arbitrary text (no mode toggle) |
 | `/brevix-compress-file <path>` | Compress memory file in place with .original backup |
+| `/brevix-check <a> | <b>` | Run Accuracy Guard on two text snippets |
+| `/brevix-count <text>` | Count tokens (tiktoken or char/4 fallback) |
+| `/brevix-install <target>` | Install Brevix rules into project for given tool |
+| `/brevix-stats` | Show local compression stats (tokens, $, by mode) |
 | `/brevix-help` | This card |
 
 ## Subagents

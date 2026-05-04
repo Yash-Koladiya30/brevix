@@ -1,0 +1,44 @@
+description = "Install Brevix rules into a project for a specific LLM coding tool."
+
+prompt = """Install Brevix rule files into the current project.
+
+Argument `{{args}}` is the target tool. Targets:
+
+| Target | Files written |
+|--------|---------------|
+| claude-code | .claude-plugin/, skills/, commands/ |
+| cursor | .cursor/rules/brevix.mdc |
+| windsurf | .windsurf/rules/brevix.md |
+| codex | AGENTS.md + .codex/hooks.json |
+| antigravity | AGENTS.md |
+| copilot | .github/copilot-instructions.md |
+| aider | CONVENTIONS.md + .aider.conf.yml |
+| continue | .continue/rules/brevix.md |
+| cline | .clinerules |
+| roo | .roo/rules/brevix.md |
+| zed | .rules |
+| gemini | gemini-extension.json + GEMINI.md |
+| augment | .augment/rules/brevix.md |
+| kilo | .kilocode/rules/brevix.md |
+| openhands | .openhands/microagents/brevix.md |
+| tabnine | .tabnine/rules/brevix.md |
+| warp | .warp/RULES.md |
+| replit | .replit/ai-rules.md |
+| sourcegraph-amp | .amp/rules/brevix.md |
+| agents-md | universal AGENTS.md |
+| all | all of the above |
+
+Run:
+```bash
+brevix install {{args}}
+```
+
+If `{{args}}` empty or `--list`:
+```bash
+brevix install --list
+```
+
+Show files written + report success.
+
+If `brevix` CLI not installed: `pip install brevix`.
+"""

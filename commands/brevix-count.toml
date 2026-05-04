@@ -1,0 +1,17 @@
+description = "Count tokens in text. Uses tiktoken if installed, char/4 heuristic otherwise."
+
+prompt = """Count tokens for `{{args}}`.
+
+Run:
+```bash
+brevix count {{args}}
+```
+
+Output format: `<n> tokens (<method>, <chars> chars)`.
+
+Where method is:
+- `tiktoken` — accurate, when `pip install 'brevix[tokens]'` ran
+- `char-heuristic` — chars/4 fallback
+
+If `brevix` CLI not installed: `pip install brevix`.
+"""
