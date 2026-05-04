@@ -2,7 +2,8 @@
 
 > Compress LLM output safely. Save tokens without breaking your code.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Yash-Koladiya30/brevix/ci.yml?branch=main)](https://github.com/Yash-Koladiya30/brevix/actions)
+[![CI](https://github.com/Yash-Koladiya30/brevix/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Yash-Koladiya30/brevix/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-78%20passing-brightgreen)](https://github.com/Yash-Koladiya30/brevix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-Plugin-8A2BE2)](https://github.com/Yash-Koladiya30/brevix)
