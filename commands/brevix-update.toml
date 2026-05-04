@@ -1,0 +1,91 @@
+description = "Update Brevix to latest version across all install paths (CLI, plugin, MCP, skills)."
+
+prompt = """Update Brevix to the latest version. Detect what's installed, update each path that exists, skip rest.
+
+Run these checks + updates in order. Show output for each. Stop only on hard failure.
+
+## 1. Python CLI (PyPI)
+
+Check:
+```bash
+brevix --version 2>/dev/null
+```
+
+If installed → update:
+```bash
+pip install --upgrade brevix
+```
+
+If pipx managed (check with `pipx list 2>/dev/null | grep brevix`):
+```bash
+pipx upgrade brevix
+```
+
+## 2. MCP middleware (npm)
+
+Check:
+```bash
+npm list -g brevix-shrink 2>/dev/null
+```
+
+If installed → update:
+```bash
+npm update -g brevix-shrink
+```
+
+## 3. Claude Code plugin
+
+Tell user to run inside `claude` CLI (not VSCode):
+```
+/plugin update brevix@brevix
+```
+
+Or full reinstall:
+```
+/plugin uninstall brevix@brevix
+/plugin install brevix@brevix
+```
+
+(Cannot run `/plugin` programmatically from a slash command — instruct user.)
+
+## 4. skills.sh installs
+
+If repo has `.agents/skills/brevix*` or `.claude/skills/brevix*`:
+```bash
+npx skills add yash-koladiya30/brevix --force
+```
+
+## 5. Per-project rule files
+
+If repo has any of these files, refresh with latest rules:
+- `.cursor/rules/brevix.mdc`
+- `.windsurf/rules/brevix.md`
+- `AGENTS.md` (with BREVIX markers)
+- `.continue/rules/brevix.md`
+- etc.
+
+Run:
+```bash
+brevix install all --force 2>/dev/null || brevix install all
+```
+
+`<!-- BREVIX:BEGIN -->` / `<!-- BREVIX:END -->` markers update only Brevix block, preserve user content.
+
+## 6. Verify
+
+```bash
+brevix --version
+npm list -g brevix-shrink 2>/dev/null
+```
+
+Both should show new version.
+
+## Latest version reference
+
+Check https://pypi.org/project/brevix/ for current PyPI version.
+Check https://www.npmjs.com/package/brevix-shrink for current npm version.
+
+If `{{args}}` is `--check-only`, skip update steps — only print currently installed vs latest available.
+
+Report each step's outcome with ✅ / ❌ / ⏭ (skipped).
+"""

@@ -32,6 +32,7 @@ Mode persist until changed or session end.
 | `/brevix-count <text>` | Count tokens (tiktoken or char/4 fallback) |
 | `/brevix-install <target>` | Install Brevix rules into project for given tool |
 | `/brevix-stats` | Show local compression stats (tokens, $, by mode) |
+| `/brevix-update` | Update Brevix everywhere (CLI, plugin, npm, skills) |
 | `/brevix-help` | This card |
 
 ## Subagents
