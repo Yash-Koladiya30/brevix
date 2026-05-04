@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e '.[dev]'
+      - name: Run tests
+        run: pytest -v
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check src tests
+
+  shrink-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Smoke test brevix-shrink
+        run: |
+          cd mcp-servers/brevix-shrink
+          node -e "import('./compress.js').then(m => { const s = { jsonrpc: '2.0', result: { tools: [{ name: 'x', description: 'Sure! In order to use this, you basically just need to call it.' }]}}; const o = m.maybeShrinkResponse({id:1, method:'tools/list'}, s); if (o.result.tools[0].description.length >= s.result.tools[0].description.length) process.exit(1); console.log('ok'); });"
