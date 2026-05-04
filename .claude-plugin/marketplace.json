@@ -12,7 +12,7 @@
   "plugins": [
     {
       "name": "brevix",
-      "source": ".",
+      "source": "./",
       "description": "Compress Claude responses 40-75% with semantic Accuracy Guard. Lite/Full/Ultra/Auto modes. Slash commands /brevix, /brevix-commit, /brevix-check, /brevix-stats, /brevix-compress-file.",
       "version": "0.4.0",
       "category": "productivity",

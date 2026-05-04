@@ -270,7 +270,7 @@ def _claude_marketplace_json() -> str:
         "plugins": [
             {
                 "name": "brevix",
-                "source": ".",
+                "source": "./",
                 "description": "Compress Claude responses 40-75% with semantic Accuracy Guard.",
                 "version": "0.3.0",
                 "category": "productivity",
