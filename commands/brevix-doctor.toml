@@ -1,0 +1,83 @@
+description = "Diagnose Brevix installation. Check CLI, plugin, MCP, hooks, configs, conflicts."
+
+prompt = '''Run installation health checks. Report ✅ / ❌ / ⏭ per check. Show suggested fix when ❌.
+
+## 1. Python CLI
+
+```bash
+which brevix && brevix --version
+```
+✅ if version printed. ❌ → `pip install brevix`.
+
+## 2. Optional extras
+
+```bash
+python3 -c "import sentence_transformers; print('guard ok')" 2>&1
+python3 -c "import tiktoken; print('tokens ok')" 2>&1
+```
+Report installed/missing. Suggest `pip install 'brevix[all]'` if both missing.
+
+## 3. MCP middleware
+
+```bash
+which brevix-shrink && brevix-shrink --help 2>&1 | head -1
+```
+Or:
+```bash
+npm list -g brevix-shrink 2>/dev/null
+```
+✅ if found. ❌ → `npm install -g brevix-shrink`.
+
+## 4. Claude Code plugin
+
+```bash
+ls ~/.claude/plugins/cache/brevix/brevix/*/commands/ 2>/dev/null
+```
+Should list 13+ .toml files. ❌ → instruct user: `/plugin install brevix@brevix` in claude CLI.
+
+## 5. Statusline + hooks
+
+```bash
+grep -l "brevix-statusline" ~/.claude/settings.json 2>/dev/null
+grep -l "brevix-activate" ~/.claude/settings.json 2>/dev/null
+```
+✅ if wired. ❌ → run `bash <plugin-cache>/hooks/install.sh`.
+
+## 6. Stats dir
+
+```bash
+ls -la ~/.brevix/ 2>/dev/null
+```
+✅ if exists. Auto-created on first compress, OK if missing.
+
+## 7. Caveman conflict
+
+```bash
+ls ~/.caveman/ ~/.claude/plugins/cache/caveman/ 2>/dev/null
+```
+If Caveman also installed → warn user about mutex (don't run both modes simultaneously).
+
+## 8. Per-project rules
+
+```bash
+find . -maxdepth 4 -name "*.mdc" -path "*brevix*" 2>/dev/null
+find . -maxdepth 3 -name "AGENTS.md" -exec grep -l "BREVIX:BEGIN" {} \; 2>/dev/null
+```
+Report found Brevix rule files in current project.
+
+## 9. Config sanity
+
+```bash
+cat ~/.brevix/config.json 2>/dev/null
+```
+Show level + autoActivate.
+
+## 10. CLI smoke test
+
+```bash
+brevix compress "Sure! Just a test of the system." --mode full -v
+```
+Should output ~50% shorter. ❌ → CLI broken.
+
+Output a final summary line: `Brevix doctor: <N> checks passed, <M> failed, <K> skipped.`
+'''

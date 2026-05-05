@@ -1,0 +1,60 @@
+description = "View or edit Brevix runtime config (~/.brevix/config.json). Default level, autoActivate, threshold."
+
+prompt = """Manage Brevix config at `~/.brevix/config.json`.
+
+Parse `{{args}}`:
+
+## No args — show config
+
+```bash
+cat ~/.brevix/config.json 2>/dev/null || echo '{ "level": "full", "autoActivate": true }'
+```
+
+## `set <key>=<value>` — update field
+
+Supported keys:
+- `level` — `lite | full | ultra | auto`
+- `autoActivate` — `true | false`
+- `threshold` — float 0.0-1.0 (Accuracy Guard)
+
+```bash
+mkdir -p ~/.brevix
+python3 -c "
+import json, os
+path = os.path.expanduser('~/.brevix/config.json')
+cfg = {}
+if os.path.exists(path):
+    with open(path) as f: cfg = json.load(f)
+key, _, val = '{{args}}'.replace('set ', '').partition('=')
+key = key.strip(); val = val.strip()
+if val.lower() in ('true','false'): val = val.lower() == 'true'
+elif val.replace('.','').replace('-','').isdigit(): val = float(val) if '.' in val else int(val)
+cfg[key] = val
+with open(path, 'w') as f: json.dump(cfg, f, indent=2)
+print(json.dumps(cfg, indent=2))
+"
+```
+
+## `reset` — restore defaults
+
+```bash
+python3 -c "
+import json, os
+path = os.path.expanduser('~/.brevix/config.json')
+os.makedirs(os.path.dirname(path), exist_ok=True)
+with open(path, 'w') as f:
+    json.dump({'level': 'full', 'autoActivate': True, 'threshold': 0.85}, f, indent=2)
+print('Reset to defaults.')
+"
+```
+
+## Examples
+
+- `/brevix-config` → show current
+- `/brevix-config set level=ultra` → switch default
+- `/brevix-config set autoActivate=false` → manual mode only
+- `/brevix-config set threshold=0.75` → looser guard
+- `/brevix-config reset` → defaults
+
+After edit, suggest restart for SessionStart hook to pick up changes.
+"""

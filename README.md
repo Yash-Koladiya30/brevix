@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/brevix-banner.png" alt="Brevix — Compress AI responses. Save tokens. Keep meaning." />
+</p>
+
 # Brevix
 
 > Compress LLM output safely. Save tokens without breaking your code.

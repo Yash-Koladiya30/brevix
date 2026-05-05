@@ -33,6 +33,9 @@ Mode persist until changed or session end.
 | `/brevix-install <target>` | Install Brevix rules into project for given tool |
 | `/brevix-stats` | Show local compression stats (tokens, $, by mode) |
 | `/brevix-update` | Update Brevix everywhere (CLI, plugin, npm, skills) |
+| `/brevix-version` | Show installed + latest versions across channels |
+| `/brevix-config [set k=v / reset]` | View/edit ~/.brevix/config.json |
+| `/brevix-doctor` | Diagnose installation health, list ✅/❌ checks |
 | `/brevix-help` | This card |
 
 ## Subagents

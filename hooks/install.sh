@@ -21,12 +21,15 @@ fi
 TMP="$(mktemp)"
 jq --arg activate "${SCRIPT_DIR}/brevix-activate.js" \
    --arg tracker "${SCRIPT_DIR}/brevix-mode-tracker.js" \
+   --arg mutex "${SCRIPT_DIR}/brevix-mutex.js" \
    --arg statusline "${SCRIPT_DIR}/brevix-statusline.sh" '
   .hooks //= {}
   | .hooks.SessionStart //= []
-  | .hooks.SessionStart |= (map(select(.matcher != "brevix")) + [
+  | .hooks.SessionStart |= (map(select(.matcher != "brevix" and .matcher != "brevix-mutex")) + [
       { "matcher": "brevix",
-        "hooks": [{"type": "command", "command": ("node " + $activate)}] }
+        "hooks": [{"type": "command", "command": ("node " + $activate)}] },
+      { "matcher": "brevix-mutex",
+        "hooks": [{"type": "command", "command": ("node " + $mutex)}] }
     ])
   | .hooks.UserPromptSubmit //= []
   | .hooks.UserPromptSubmit |= (map(select(.matcher != "brevix")) + [

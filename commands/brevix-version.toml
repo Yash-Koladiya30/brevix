@@ -1,0 +1,32 @@
+description = "Show installed Brevix versions across CLI, plugin, MCP middleware, and the latest available."
+
+prompt = """Print version info for every Brevix surface present.
+
+## Local versions
+
+```bash
+brevix --version 2>/dev/null || echo "CLI: not installed"
+npm list -g brevix-shrink --depth=0 2>/dev/null | grep brevix-shrink || echo "MCP: not installed"
+ls -d ~/.claude/plugins/cache/brevix/brevix/*/ 2>/dev/null | tail -1 || echo "Plugin: not installed"
+```
+
+## Latest available
+
+```bash
+curl -s https://pypi.org/pypi/brevix/json | python3 -c "import sys, json; d=json.load(sys.stdin); print('PyPI latest:', d['info']['version'])" 2>/dev/null
+curl -s https://registry.npmjs.org/brevix-shrink/latest | python3 -c "import sys, json; d=json.load(sys.stdin); print('npm latest:', d['version'])" 2>/dev/null
+```
+
+## Output format
+
+```
+Brevix CLI:        <ver>   (latest <ver>)
+brevix-shrink:     <ver>   (latest <ver>)
+Claude plugin:     <ver>
+Repo:              https://github.com/Yash-Koladiya30/brevix
+PyPI:              https://pypi.org/project/brevix/
+npm:               https://www.npmjs.com/package/brevix-shrink
+```
+
+If installed != latest: print one-liner update suggestion → `/brevix-update`.
+"""

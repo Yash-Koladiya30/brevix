@@ -1,6 +1,6 @@
 {
   "name": "brevix-shrink",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "MCP middleware proxy that compresses tools/list, prompts/list, and resources/list responses to save tokens. Sister project to Brevix.",
   "bin": {
     "brevix-shrink": "./index.js"
