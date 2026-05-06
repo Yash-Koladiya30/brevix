@@ -1,0 +1,39 @@
+description = "Route a task to the cheapest capable Claude tier (Haiku/Sonnet/Opus). Saves ~80% vs always-Opus."
+
+prompt = """Route the task in {{args}} via Brevix.
+
+Steps:
+1. Run: `brevix route "{{args}}" --explain`
+   - If `brevix` CLI is missing, tell the user to install: `pip install brevix`
+   - If the command fails for any other reason, surface the error verbatim and stop.
+
+2. Parse the `Selected model:` line from the output. Map to a subagent:
+   | Selected model         | Subagent              |
+   |------------------------|-----------------------|
+   | claude-haiku-4-5       | brevix:brevix-haiku   |
+   | claude-haiku-4-5-*     | brevix:brevix-haiku   |
+   | claude-sonnet-4-6      | brevix:brevix-sonnet  |
+   | claude-sonnet-4-6-*    | brevix:brevix-sonnet  |
+   | claude-opus-4-7        | brevix:brevix-opus    |
+   | claude-opus-4-7-*      | brevix:brevix-opus    |
+   | (any other)            | brevix:brevix-sonnet  |
+
+3. Spawn that subagent via the Task tool with the full task text from `{{args}}` as the prompt.
+   - For builder/edit tasks, give the subagent any file paths the user mentioned.
+   - For investigation/read-only tasks, prefer brevix-investigator instead of brevix-haiku.
+
+4. If the subagent returns `escalate: <reason>` (Haiku/Sonnet) or `unresolved: <what is missing>` (Opus):
+   - Haiku escalate -> retry on brevix:brevix-sonnet
+   - Sonnet escalate -> retry on brevix:brevix-opus
+   - Opus unresolved -> surface the gap to the user; do not silently retry
+   - Cap retries at 1 per tier.
+
+5. Print one line of routing telemetry to the user before the answer:
+   `[brevix] task=<task> tier=<haiku|sonnet|opus> escalated=<0|1>`
+   Then print the subagent's answer verbatim.
+
+Notes:
+- Do NOT do the work yourself in the main agent. The point of this command is delegation to the right tier.
+- Do NOT pass-through to Opus by default. Trust the route decision unless the subagent escalates.
+- If the user prefixes with `--force-tier=haiku|sonnet|opus`, skip step 1 and go directly to that tier.
+"""

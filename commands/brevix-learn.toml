@@ -1,0 +1,24 @@
+description = "Show or apply learned routing rule changes from observed escalation patterns."
+
+prompt = """Run the Brevix learn loop based on `{{args}}`.
+
+Mode selection:
+- If args contains `apply` or `--apply` -> `brevix route --learn-apply {{args}}`
+  Confirm with the user FIRST that they want to overwrite ~/.brevix/route.json. Show what will change before applying.
+- Otherwise (default = suggest) -> `brevix route --learn-suggest {{args}}`
+
+Optional knobs (pass through if user gave them):
+- `--learn-min-samples N` (default 20)
+- `--learn-threshold X`   (default 0.5)
+
+Pass output through verbatim.
+
+If no suggestions yet, the CLI prints:
+`No suggestions yet (need more data or no escalating tasks).`
+Just relay that — do not invent recommendations from thin air.
+
+If `brevix` CLI is missing:
+```bash
+pip install brevix
+```
+"""

@@ -1,0 +1,16 @@
+description = "Show Brevix routing stats: cost saved vs Opus-only, escalation rate, per-model and per-task breakdown."
+
+prompt = """Show routing stats based on `{{args}}`.
+
+Run one of:
+- If args contains `--reset` -> `brevix stats --routing --reset`
+- If args contains `--since` -> pass through, e.g. `brevix stats --routing --since 7d`
+- Otherwise -> `brevix stats --routing`
+
+Pass output through verbatim. Do not add commentary unless the user asked for analysis.
+
+If `brevix` CLI is missing:
+```bash
+pip install brevix
+```
+"""
