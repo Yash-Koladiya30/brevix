@@ -1,6 +1,6 @@
 {
   "name": "brevix",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "description": "Safe LLM output compression. Save 40-75% tokens with semantic Accuracy Guard, adaptive mode, and rule-based engine. 20 platform integrations.",
   "author": {
     "name": "Yash Koladiya",
@@ -19,5 +19,37 @@
     "rule-engine",
     "claude-code",
     "multi-platform"
-  ]
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/brevix-activate.js\"",
+            "timeout": 5,
+            "statusMessage": "Loading Brevix..."
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/brevix-mutex.js\"",
+            "timeout": 5,
+            "statusMessage": "Resolving Brevix/Caveman mutex..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/brevix-mode-tracker.js\"",
+            "timeout": 5,
+            "statusMessage": "Tracking Brevix mode..."
+          }
+        ]
+      }
+    ]
+  }
 }
