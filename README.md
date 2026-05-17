@@ -307,6 +307,17 @@ brevix install all                   # write rule files for every tool
 /plugin install brevix@brevix
 ```
 
+#### Browser extension — claude.ai + chatgpt.com
+
+For users who chat in the web UI (no Python, no API key):
+
+1. Clone the repo (or download `extensions/browser/`).
+2. Chrome / Edge / Brave → `chrome://extensions` → enable **Developer mode** → **Load unpacked** → pick `extensions/browser/`.
+3. Firefox → `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on…** → pick `extensions/browser/manifest.json`.
+4. Open https://claude.ai or https://chatgpt.com — the **BREVIX** toolbar appears top-right with a mode dropdown and live token-saved counter.
+
+Full extension docs: [`extensions/browser/README.md`](./extensions/browser/README.md).
+
 #### MCP middleware
 
 Compress upstream MCP server descriptions:
@@ -621,6 +632,7 @@ python evals/measure.py
 - [x] Routing stats dashboard (`brevix stats --routing`)
 - [x] Learn loop (`brevix route --learn-suggest|--learn-apply`)
 - [x] Claude Code routing tier subagents + slash commands
+- [x] Browser extension MVP (claude.ai + chatgpt.com)
 - [ ] VSCode extension UI
 - [ ] Browser extension (claude.ai, chatgpt.com web)
 - [ ] Two-way compression (compress prompts before send)

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Brevix — Settings</title>
+    <link rel="stylesheet" href="../popup/popup.css" />
+    <style>
+      body { width: 480px; padding: 24px; }
+      h1 { color: #FFD93D; margin: 0 0 4px; font-size: 18px; }
+      .sub { color: #8B949E; margin: 0 0 18px; font-size: 12px; }
+      .group { padding: 12px; border: 1px solid #30363D; border-radius: 8px; margin-bottom: 12px; background: #0D1117; }
+      .group h2 { font-size: 13px; margin: 0 0 8px; color: #58A6FF; }
+      .row { margin: 6px 0; }
+      .desc { color: #8B949E; font-size: 11px; margin-top: 2px; }
+    </style>
+  </head>
+  <body>
+    <h1>Brevix Settings</h1>
+    <p class="sub">Browser extension v0.1.0 — runs on claude.ai and chatgpt.com.</p>
+
+    <div class="group">
+      <h2>Default mode</h2>
+      <div class="row">
+        <select id="mode" class="select">
+          <option value="off">Off</option>
+          <option value="lite">Lite — gentle</option>
+          <option value="full">Full — default</option>
+          <option value="ultra">Ultra — max</option>
+        </select>
+        <p class="desc">Applied to every chat conversation until you change it.</p>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Behavior</h2>
+      <div class="row toggle">
+        <label class="lbl"><input type="checkbox" id="enabled" /> Extension enabled</label>
+      </div>
+      <div class="row toggle">
+        <label class="lbl"><input type="checkbox" id="showToolbar" /> Show floating toolbar on chat pages</label>
+      </div>
+      <div class="row toggle">
+        <label class="lbl"><input type="checkbox" id="injectOnce" /> Inject rule once per conversation (recommended)</label>
+        <p class="desc">When off, the rule prefix is added to every message — wastes tokens but is more reliable.</p>
+      </div>
+      <div class="row toggle">
+        <label class="lbl"><input type="checkbox" id="stealth" /> Stealth mode (hide rule prefix in chat UI)</label>
+        <p class="desc">Removes the visible Brevix rule text from your own message bubbles. Rule still rides in the API request.</p>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>About</h2>
+      <p class="desc">
+        Brevix is a deterministic rule engine for compressing LLM output. The browser
+        extension nudges Claude/ChatGPT to apply the same rules locally inside the
+        web chat, since these tools don't expose API access.
+      </p>
+      <p class="desc">
+        Source: <a href="https://github.com/Yash-Koladiya30/brevix" target="_blank" rel="noopener">github.com/Yash-Koladiya30/brevix</a>
+      </p>
+    </div>
+
+    <script src="../lib/rules.js"></script>
+    <script src="../lib/stats.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

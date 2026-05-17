@@ -1,0 +1,67 @@
+/* Brevix floating toolbar — top-right of the chat page. */
+
+.brevix-toolbar {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #0D1117;
+  color: #E6EDF3;
+  border: 1px solid #30363D;
+  border-radius: 999px;
+  font: 500 12px/1.2 -apple-system, "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  user-select: none;
+}
+
+.brevix-toolbar .brevix-status {
+  font-size: 10px;
+  line-height: 1;
+  margin-right: -2px;
+}
+.brevix-toolbar .brevix-status.live { color: #10B981; }
+.brevix-toolbar .brevix-status.dead { color: #F85149; }
+
+.brevix-toolbar .brevix-tag {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #FFD93D;
+}
+
+.brevix-toolbar .brevix-mode {
+  appearance: none;
+  background: #161B22;
+  color: #E6EDF3;
+  border: 1px solid #30363D;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.brevix-toolbar .brevix-saved {
+  color: #10B981;
+  font-variant-numeric: tabular-nums;
+}
+
+.brevix-toolbar .brevix-btn {
+  appearance: none;
+  background: transparent;
+  color: #8B949E;
+  border: 1px solid #30363D;
+  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.brevix-toolbar .brevix-btn:hover {
+  color: #FFD93D;
+  border-color: #FFD93D;
+}

@@ -1,0 +1,84 @@
+{
+  "manifest_version": 3,
+  "name": "Brevix — Compress AI Chat",
+  "short_name": "Brevix",
+  "version": "0.3.0",
+  "description": "Compress LLM output 40-75% on claude.ai and chatgpt.com. Save tokens. Keep meaning.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Brevix",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service_worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "clipboardWrite",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://claude.ai/*",
+    "https://*.claude.ai/*",
+    "https://chatgpt.com/*",
+    "https://*.chatgpt.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*", "https://*.claude.ai/*"],
+      "js": ["content/page_inject.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://chatgpt.com/*", "https://*.chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["content/page_inject.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://claude.ai/*", "https://*.claude.ai/*"],
+      "js": ["lib/rules.js", "lib/stats.js", "content/inject.js", "content/claude_ai.js"],
+      "css": ["content/toolbar.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://chatgpt.com/*", "https://*.chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["lib/rules.js", "lib/stats.js", "content/inject.js", "content/chatgpt_com.js"],
+      "css": ["content/toolbar.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["content/page_inject.js"],
+      "matches": [
+        "https://claude.ai/*",
+        "https://*.claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://*.chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ]
+    }
+  ]
+}
