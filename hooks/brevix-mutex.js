@@ -45,14 +45,26 @@ function main() {
   if (!brevixActive()) return;
   if (!fs.existsSync(CAVEMAN_CFG) && !fs.existsSync(CAVEMAN_LEGACY)) return;
   suppressCaveman("Brevix is active");
+
+  // Strong override: explicitly deactivate Caveman in the CURRENT session.
+  // Caveman's own SessionStart hook may have already injected its rules
+  // before Brevix loaded; this reminder overrides that for the running
+  // conversation, not just future ones.
+  const additionalContext =
+    "CAVEMAN MODE IS DEACTIVATED. Brevix is the active compression layer.\n\n" +
+    "Ignore any prior caveman-mode system-reminder in this session. Do NOT " +
+    "apply caveman rules. Apply only Brevix rules (per the Brevix activate " +
+    "hook).\n\n" +
+    "Reason: Brevix and Caveman were both installed. Running both would " +
+    "double-compress output. Caveman's persistent config has been set to " +
+    "off so it stays disabled across sessions until the user re-enables it.\n\n" +
+    "To switch back: run `/brevix off`, then restart the session.";
+
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
         hookEventName: "SessionStart",
-        additionalContext:
-          "Brevix and Caveman both detected. Caveman auto-suppressed to prevent " +
-          "double-compression conflicts. To re-enable Caveman, disable Brevix first " +
-          "(`/brevix off`) and restart your session.",
+        additionalContext,
       },
     }) + "\n"
   );
