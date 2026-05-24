@@ -13,7 +13,6 @@ jobs:
       url: https://www.npmjs.com/package/brevix-shrink
     permissions:
       contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,15 +20,34 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Set package version from git tag
+      - name: Resolve version
+        id: ver
         working-directory: mcp-servers/brevix-shrink
         run: |
-          TAG="${GITHUB_REF#refs/tags/v}"
-          echo "Setting brevix-shrink version to ${TAG}"
-          npm pkg set version="${TAG}"
-          cat package.json | grep '"version"'
+          if [ "${GITHUB_REF}" != "${GITHUB_REF#refs/tags/v}" ]; then
+            TAG="${GITHUB_REF#refs/tags/v}"
+            echo "Setting brevix-shrink version to ${TAG} from tag"
+            npm pkg set version="${TAG}"
+          fi
+          V=$(node -p "require('./package.json').version")
+          echo "version=${V}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: ${V}"
+
+      - name: Check if already published
+        id: check
+        working-directory: mcp-servers/brevix-shrink
+        run: |
+          V="${{ steps.ver.outputs.version }}"
+          if npm view "brevix-shrink@${V}" version >/dev/null 2>&1; then
+            echo "brevix-shrink@${V} already on npm — skipping publish."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "brevix-shrink@${V} not on npm — will publish."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish to npm
+        if: steps.check.outputs.skip == 'false'
         working-directory: mcp-servers/brevix-shrink
         run: npm publish --access public
         env:
